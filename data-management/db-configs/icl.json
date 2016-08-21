@@ -1,0 +1,12 @@
+{
+  "dbConfig": {
+    "host": "localhost",
+    "port": 27017,
+    "databaseName": "test"
+  },
+  "collections": [
+    "LYRICS",
+    "LYRICSSTANZAS"
+  ],
+  "path": "/vagrant/files/data/icl"
+}

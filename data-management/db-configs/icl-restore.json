@@ -1,0 +1,14 @@
+{
+  "dbConfig": {
+    "host": "localhost",
+    "port": 27017,
+    "databaseName": "test"
+  },
+  "collections": [
+    "users",
+    "schema",
+    "promises",
+    "lyrics"
+  ],
+  "path": "/vagrant/files/data/test"
+}
