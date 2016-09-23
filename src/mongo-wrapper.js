@@ -40,7 +40,7 @@ class MongoWrapper {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
-          _db.collection(collectionName).drop(function (err) {
+          _db.collection(collectionName).deleteMany({}, function (err) {
             if (err) {
               return reject(err);
             } else {
@@ -61,6 +61,21 @@ class MongoWrapper {
             } else {
               document._id = doc.insertedId;
               return resolve(document);
+            }
+          });
+        });
+      });
+  }
+
+  static insertMultipleDocuments(collectionName, documents) {
+    return MongoWrapper.initConnection()
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          _db.collection(collectionName).insertMany(documents, function (err, docs) {
+            if (err) {
+              return reject(err);
+            } else {
+              return resolve(docs);
             }
           });
         });
@@ -154,38 +169,33 @@ class MongoWrapper {
     customQuery(collectionName, { query: query }, callback);
   }
 
-  customQuery(collectionName, options, callback) {
-    console.dir("Collection Name:" + collectionName);
-    this.getConnection(function (err, database) {
-      if (options.hint === "queryWithSortAndLimit") {
-        database.collection(collectionName).find(options.query, { "sort": options.sort }).limit(options.limit).toArray(function (err, docs) {
-          console.dir("docs fetched");
-          callback(err, docs);
-        });
-      }
-      else {
-        database.collection(collectionName).find(options.query).toArray(function (err, docs) {
-          console.dir("docs fetched");
-          //console.dir(docs);
-          callback(err, docs);
-        });
-      }
-    });
-  }
+  static customQuery(collectionName, options) {
+    return MongoWrapper.initConnection()
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          let query = _db.collection(collectionName).find(options.query);
 
-  getConnection(callback) {
-    if (this.dbConnection) {
-      return callback(null, this.dbConnection)
-    }
+          if (options.sort) {
+            query = query.sort(options.sort);
+          }
 
-    MongoClient.connect(this.mongoConfig.getConnectionString(), (err, dbConnection) => {
-      this.dbConnection = dbConnection;
-      if (err) {
-        console.log("Error Connecting to Mongo");
-        return callback(err, null);
-      }
-      return callback(null, dbConnection);
-    });
+          if (options.skip) {
+            query = query.skip(options.skip);
+          }
+
+          if (options.limit) {
+            query = query.limit(options.limit);
+          }
+
+          query.toArray(function (err, result) {
+            if (err) {
+              return reject(err);
+            } else {
+              return resolve(result);
+            }
+          });
+        });
+      });
   }
 }
 
