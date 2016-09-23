@@ -36,12 +36,12 @@ class MongoWrapper {
     }
   }
 
-  static dropCollection(collectionName){
+  static dropCollection(collectionName) {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
           _db.collection(collectionName).drop(function (err) {
-            if(err){
+            if (err) {
               return reject(err);
             } else {
               return resolve();
@@ -56,7 +56,7 @@ class MongoWrapper {
       .then(() => {
         return new Promise((resolve, reject) => {
           _db.collection(collectionName).insertOne(document, function (err, doc) {
-            if(err){
+            if (err) {
               return reject(err);
             } else {
               document._id = doc.insertedId;
@@ -135,15 +135,19 @@ class MongoWrapper {
     });
   }
 
-  findOne(collectionName, query, callback) {
-    console.dir("Collection Name:" + collectionName);
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).findOne(query, function (err, docs) {
-        console.dir("docs fetched");
-        //console.dir(docs);
-        callback(err, docs);
+  static findOneByQuery(collectionName, query, callback) {
+    return MongoWrapper.initConnection()
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          _db.collection(collectionName).findOne(query, function (err, result) {
+            if (err) {
+              return reject(err);
+            } else {
+              return resolve(result);
+            }
+          });
+        });
       });
-    });
   }
 
   findAll(collectionName, query, callback) {

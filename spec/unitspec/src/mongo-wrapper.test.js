@@ -8,13 +8,22 @@ describe("Mongo Wrapper", () => {
     databaseName: "test"
   });
 
+  const john = {
+    _id: "IDOFJOHN",
+    firstName: "John",
+    lastName: "Peter"
+  };
+
   beforeEach(done => {
     MongoWrapper.useConfig(mongoConfig);
 
     MongoWrapper.dropCollection("ABCDEFR")
-    .then(() => {
-      done();
-    });
+      .then(() => {
+        return MongoWrapper.insertDocument("ABCDEFR", john);
+      })
+      .then(() => {
+        done();
+      });
   });
 
   it("should insert a sample document", (done) => {
@@ -24,18 +33,18 @@ describe("Mongo Wrapper", () => {
     };
 
     MongoWrapper.insertDocument("ABCDEFR", doc)
-    .then(updatedDoc => {
-      console.dir(updatedDoc);
-      expect(updatedDoc).toBeDefined();
-      expect(updatedDoc._id).toBeDefined();
-      expect(updatedDoc.firstName).toBe("XXXX");
-      expect(updatedDoc.lastName).toBe("YYYY");
-      done();
-    })
-    .catch(err => {
-      console.warn(err);
-      console.warn(err.stack);
-    });
+      .then(updatedDoc => {
+        console.dir(updatedDoc);
+        expect(updatedDoc).toBeDefined();
+        expect(updatedDoc._id).toBeDefined();
+        expect(updatedDoc.firstName).toBe("XXXX");
+        expect(updatedDoc.lastName).toBe("YYYY");
+        done();
+      })
+      .catch(err => {
+        console.warn(err);
+        console.warn(err.stack);
+      });
   });
 
   it("should insert a sample document, with the specified id", (done) => {
@@ -44,21 +53,32 @@ describe("Mongo Wrapper", () => {
       firstName: "XXXX",
       lastName: "YYYY"
     };
-    
-    MongoWrapper.useConfig(mongoConfig);
 
     MongoWrapper.insertDocument("ABCDEFR", doc)
-    .then(updatedDoc => {
-      console.dir(updatedDoc);
-      expect(updatedDoc).toBeDefined();
-      expect(updatedDoc._id).toBe("MyFavouriteId");
-      expect(updatedDoc.firstName).toBe("XXXX");
-      expect(updatedDoc.lastName).toBe("YYYY");
-      done();
-    })
-    .catch(err => {
-      console.warn(err);
-      console.warn(err.stack);
-    });
+      .then(updatedDoc => {
+        console.dir(updatedDoc);
+        expect(updatedDoc).toBeDefined();
+        expect(updatedDoc._id).toBe("MyFavouriteId");
+        expect(updatedDoc.firstName).toBe("XXXX");
+        expect(updatedDoc.lastName).toBe("YYYY");
+        done();
+      })
+      .catch(err => {
+        console.warn(err);
+        console.warn(err.stack);
+      });
+  });
+
+  it("should be able to query a singe document", (done) => {
+    MongoWrapper.findOneByQuery("ABCDEFR", { _id: "IDOFJOHN" })
+      .then(result => {
+        expect(result).toBeDefined();
+        expect(result).toEqual(john);
+        done();
+      })
+      .catch(err => {
+        console.warn(err);
+        console.warn(err.stack);
+      });
   });
 });
