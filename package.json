@@ -4,7 +4,8 @@
   "description": "A Simple Data Access Layer",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config=.jest.json --watch",
+    "eslint": "node node_modules/eslint/bin/eslint src"
   },
   "repository": {
     "type": "git",
@@ -14,22 +15,18 @@
     "dal"
   ],
   "author": "Vivasaayi <vivasaayi@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/vivasaayi/dal/issues"
   },
   "homepage": "https://github.com/vivasaayi/dal",
   "dependencies": {
-    "mongodb": "^1.4.33",
-    "q": "^1.4.1",
-    "underscore": "^1.8.2"
+    "bluebird": "3.4.6",
+    "lodash": "4.16.1",
+    "mongodb": "2.2.10"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-csslint": "^0.4.0",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-jasmine-node": "^0.2.1",
-    "jasmine-node": "^1.14.5",
-    "proxyquire": "^1.4.0"
+    "eslint": "3.5.0",
+    "jest": "15.1.1"
   }
 }
