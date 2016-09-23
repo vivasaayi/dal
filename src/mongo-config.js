@@ -22,13 +22,13 @@ class MongoConfig {
   }
 
   getConnectionString() {
-    console.log(this)
     this.validate();
 
 
     const connectionString = "mongodb://" + (this.dbConfig.host)
       + ":" + (this.dbConfig.port)
       + "/" + (this.dbConfig.databaseName);
+      
     return connectionString;
   }
 }
