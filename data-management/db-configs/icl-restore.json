@@ -5,10 +5,8 @@
     "databaseName": "test"
   },
   "collections": [
-    "users",
-    "schema",
-    "promises",
-    "lyrics"
+    "LYRICS",
+    "LYRICSSTANZAS"
   ],
-  "path": "/vagrant/files/data/test"
+  "path": "/home/rajan/Documents/projects/files/data/icl"
 }

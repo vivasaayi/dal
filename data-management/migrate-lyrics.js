@@ -6,11 +6,11 @@ const Q = require("q");
 const _ = require("underscore");
 const importConfig = require("./db-configs/icl-restore.json");
 
-const MongoConfig = require("../mongo-config");
-const MongoWrapper = require("../index");
+const MongoConfig = require("../src/mongo-config");
+const MongoWrapper = require("../index").MongoWrapper;
 const mongoConfig = new MongoConfig(importConfig.dbConfig);
-const mongoWrapper = MongoWrapper.getInstance(mongoConfig);
-const ObjectId = require("mongodb").ObjectID
+const mongoWrapper = new MongoWrapper(mongoConfig);
+const ObjectId = require("mongodb").ObjectID;
 
 class Migrator {
   migrate() {

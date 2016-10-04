@@ -3,15 +3,16 @@
 const fs = require("fs");
 const path = require("path");
 
-const MongoConfig = require("../mongo-config");
-const MongoWrapper = require("../index");
+const MongoConfig = require("../src/mongo-config");
+const MongoWrapper = require("../index").MongoWrapper;
 const _ = require("underscore");
 const Q = require("q");
 
 const importConfig = require("./db-configs/icl-restore.json");
 
 const mongoConfig = new MongoConfig(importConfig.dbConfig);
-const mongoWrapper = MongoWrapper.getInstance(mongoConfig);
+
+MongoWrapper.useConfig(mongoConfig);
 
 class Importer {
   import() {
@@ -35,7 +36,7 @@ class Importer {
     const promises = [];
 
     _.each(files, file => {
-      promises.push(Q.nfcall(mongoWrapper.insertDocument.bind(mongoWrapper), collection, file.data));
+      promises.push(MongoWrapper.insertDocument(collection, file.data));
     });
 
     return Q.all(promises);
