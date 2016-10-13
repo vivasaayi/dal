@@ -82,15 +82,21 @@ class MongoWrapper {
       });
   }
 
-  updateDocument(collectionName, document, callback) {
+  static updateDocument(collectionName, document, callback) {
     document._id = new ObjectID(document._id.toString());
 
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).update({ "_id": document._id }, document, { upsert: false }, function (err, docs) {
-        callback(err, docs);
+    return MongoWrapper.initConnection()
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          _db.collection(collectionName).update({ "_id": document._id }, document, { upsert: false }, function (err, docs) {
+            if (err) {
+              return reject(err);
+            } else {
+              return resolve(docs);
+            }
+          });
+        });
       });
-    });
-
   }
 
   upsertDocument(collectionName, document, callback) {
