@@ -4,7 +4,7 @@
   "description": "A Simple Data Access Layer",
   "main": "index.js",
   "scripts": {
-    "test": "jest --config=.jest.json --watch",
+    "test": "node node_modules/jest/bin/jest --config=.jest.json --watch",
     "eslint": "node node_modules/eslint/bin/eslint src"
   },
   "repository": {

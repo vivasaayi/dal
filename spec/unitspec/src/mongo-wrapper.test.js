@@ -228,11 +228,22 @@ describe("Mongo Wrapper", () => {
 
     MongoWrapper.updateDocument("STUDENTS", clonedRecordOfAbraham)
       .then(result => {
-        result._id = IDOFABRAHAM;
-        result.firstName = "Abraham";
-        result.lastName = "David";
+        expect(result.result.nModified).toBe(1);
+      })
+      .then(()=> {
+        return MongoWrapper.findOneByQuery("STUDENTS", { _id: IDOFABRAHAM })
+      })
+      .then(result => {
+        expect(result).toBeDefined();
 
-        done()
+        expect(result._id).toEqual(IDOFABRAHAM);
+        expect(result.firstName).toBe("Abraham");
+        expect(result.lastName).toBe("David");
+        done();
+      })
+      .catch(err => {
+        console.warn(err);
+        console.warn(err.stack);
       });
   });
 });
