@@ -11,6 +11,10 @@ class MongoWrapper {
     _mongoConfig = mongoConfig;
   }
 
+  static getObjectId() {
+    return new ObjectId();
+  }
+
   static getConfig() {
     return _mongoConfig;
   }
@@ -40,10 +44,11 @@ class MongoWrapper {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
-          _db.collection(collectionName).deleteMany({}, function (err) {
+          _db.collection(collectionName).deleteMany({}, function(err) {
             if (err) {
               return reject(err);
-            } else {
+            }
+            else {
               return resolve();
             }
           });
@@ -55,10 +60,11 @@ class MongoWrapper {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
-          _db.collection(collectionName).insertOne(document, function (err, doc) {
+          _db.collection(collectionName).insertOne(document, function(err, doc) {
             if (err) {
               return reject(err);
-            } else {
+            }
+            else {
               document._id = doc.insertedId;
               return resolve(document);
             }
@@ -71,10 +77,11 @@ class MongoWrapper {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
-          _db.collection(collectionName).insertMany(documents, function (err, docs) {
+          _db.collection(collectionName).insertMany(documents, function(err, docs) {
             if (err) {
               return reject(err);
-            } else {
+            }
+            else {
               return resolve(docs);
             }
           });
@@ -82,17 +89,16 @@ class MongoWrapper {
       });
   }
 
-  static updateDocument(collectionName, document, callback) {
-    document._id = new ObjectID(document._id.toString());
-
+  static updateDocument(collectionName, document) {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
-          _db.collection(collectionName).update({ "_id": document._id }, document, { upsert: false }, function (err, docs) {
+          _db.collection(collectionName).update({ "_id": document._id }, document, { upsert: false }, function(err, result) {
             if (err) {
               return reject(err);
-            } else {
-              return resolve(docs);
+            }
+            else {
+              return resolve(result);
             }
           });
         });
@@ -102,16 +108,16 @@ class MongoWrapper {
   upsertDocument(collectionName, document, callback) {
     document._id = new ObjectID(document._id.toString());
 
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).update({ "_id": document._id }, document, { upsert: true }, function (err, docs) {
+    this.getConnection(function(err, database) {
+      database.collection(collectionName).update({ "_id": document._id }, document, { upsert: true }, function(err, docs) {
         callback(err, docs);
       });
     });
   }
 
   deleteDocumentById(collectionName, documentId, callback) {
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).remove({ "_id": new ObjectID(documentId) }, document, { upsert: false }, function (err, docs) {
+    this.getConnection(function(err, database) {
+      database.collection(collectionName).remove({ "_id": new ObjectID(documentId) }, document, { upsert: false }, function(err, docs) {
         callback(err, docs);
       });
     });
@@ -119,8 +125,8 @@ class MongoWrapper {
 
   deleteDocument(collectionName, document, callback) {
     document._id = new ObjectID(document._id);
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).remove({ "_id": document._id }, document, function (err, docs) {
+    this.getConnection(function(err, database) {
+      database.collection(collectionName).remove({ "_id": document._id }, document, function(err, docs) {
         callback(err, docs);
       });
     });
@@ -128,8 +134,8 @@ class MongoWrapper {
 
   getAllFromCollection(collectionName, callback) {
     console.dir("Collection Name:" + collectionName);
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).find().toArray(function (err, docs) {
+    this.getConnection(function(err, database) {
+      database.collection(collectionName).find().toArray(function(err, docs) {
         callback(err, docs);
       });
     });
@@ -137,8 +143,8 @@ class MongoWrapper {
 
   getTopXFromCollection(collectionName, limit, callback) {
     console.dir("Collection Name:" + collectionName);
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).find().limit(limit).toArray(function (err, docs) {
+    this.getConnection(function(err, database) {
+      database.collection(collectionName).find().limit(limit).toArray(function(err, docs) {
         console.dir("docs fetched");
         callback(err, docs);
       });
@@ -147,8 +153,8 @@ class MongoWrapper {
 
   loadSelectedFields(collectionName, query, option, callback) {
     console.dir("Collection Name:" + collectionName);
-    this.getConnection(function (err, database) {
-      database.collection(collectionName).find({}, option).toArray(function (err, docs) {
+    this.getConnection(function(err, database) {
+      database.collection(collectionName).find({}, option).toArray(function(err, docs) {
         console.dir("docs fetched");
         //console.dir(docs);
         callback(err, docs);
@@ -160,10 +166,11 @@ class MongoWrapper {
     return MongoWrapper.initConnection()
       .then(() => {
         return new Promise((resolve, reject) => {
-          _db.collection(collectionName).findOne(query, function (err, result) {
+          _db.collection(collectionName).findOne(query, function(err, result) {
             if (err) {
               return reject(err);
-            } else {
+            }
+            else {
               return resolve(result);
             }
           });
@@ -193,10 +200,11 @@ class MongoWrapper {
             query = query.limit(options.limit);
           }
 
-          query.toArray(function (err, result) {
+          query.toArray(function(err, result) {
             if (err) {
               return reject(err);
-            } else {
+            }
+            else {
               return resolve(result);
             }
           });

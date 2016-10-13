@@ -8,26 +8,31 @@ describe("Mongo Wrapper", () => {
     databaseName: "test"
   });
 
+  const IDOFJOHN = MongoWrapper.getObjectId();
+  const IDOFJOHAN = MongoWrapper.getObjectId();
+  const IDOFRAJAN = MongoWrapper.getObjectId();
+  const IDOFABRAHAM = MongoWrapper.getObjectId();
+
   const john = {
-    _id: "IDOFJOHN",
+    _id: IDOFJOHN,
     firstName: "John",
     lastName: "Peter"
   };
 
   const johan = {
-    _id: "IDOFJOHAN",
+    _id: IDOFJOHAN,
     firstName: "Johan",
     lastName: "Smith"
   };
 
   const rajan = {
-    _id: "IDOFRAJAN",
+    _id: IDOFRAJAN,
     firstName: "Rajan",
     lastName: "Panneer Selvam"
   };
 
   const abraham = {
-    _id: "IDOFABRAHAM",
+    _id: IDOFABRAHAM,
     firstName: "ABRAHAM",
     lastName: "DAVID"
   };
@@ -105,7 +110,7 @@ describe("Mongo Wrapper", () => {
   });
 
   it("should be able to query a singe document", (done) => {
-    MongoWrapper.findOneByQuery("ABCDEFR", { _id: "IDOFJOHN" })
+    MongoWrapper.findOneByQuery("ABCDEFR", { _id: IDOFJOHN })
       .then(result => {
         expect(result).toBeDefined();
         expect(result).toEqual(john);
@@ -119,7 +124,7 @@ describe("Mongo Wrapper", () => {
 
   // CustomQuery
   it("should be able to query the documents, using custom query", (done) => {
-    MongoWrapper.customQuery("ABCDEFR", { query: { _id: "IDOFJOHN" } })
+    MongoWrapper.customQuery("ABCDEFR", { query: { _id: IDOFJOHN } })
       .then(result => {
         expect(result).toBeDefined();
         expect(result.length).toBe(1);
@@ -133,7 +138,7 @@ describe("Mongo Wrapper", () => {
   });
 
   it("should be able to query the documents, Single Doc, using custom query - STUDENTS", (done) => {
-    MongoWrapper.customQuery("STUDENTS", { query: { _id: "IDOFRAJAN" } })
+    MongoWrapper.customQuery("STUDENTS", { query: { _id: IDOFRAJAN } })
       .then(result => {
         expect(result).toBeDefined();
         expect(result.length).toBe(1);
@@ -213,6 +218,21 @@ describe("Mongo Wrapper", () => {
       .catch(err => {
         console.warn(err);
         console.warn(err.stack);
+      });
+  });
+
+  it("should be able to update a document", (done) => {
+    const clonedRecordOfAbraham = Object.assign({}, abraham);
+    clonedRecordOfAbraham.firstName = "Abraham";
+    clonedRecordOfAbraham.lastName = "David";
+
+    MongoWrapper.updateDocument("STUDENTS", clonedRecordOfAbraham)
+      .then(result => {
+        result._id = IDOFABRAHAM;
+        result.firstName = "Abraham";
+        result.lastName = "David";
+
+        done()
       });
   });
 });
