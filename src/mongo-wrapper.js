@@ -12,7 +12,7 @@ class MongoWrapper {
   }
 
   static getObjectId() {
-    return new ObjectID();
+    return new ObjectID().toString();
   }
 
   static getConfig() {

@@ -236,7 +236,7 @@ describe("Mongo Wrapper", () => {
       .then(result => {
         expect(result).toBeDefined();
 
-        expect(result._id).toEqual(IDOFABRAHAM);
+        expect(result._id).toBe(IDOFABRAHAM);
         expect(result.firstName).toBe("Abraham");
         expect(result.lastName).toBe("David");
         done();
