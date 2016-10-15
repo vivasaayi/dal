@@ -2,18 +2,19 @@
 
 const fsPath = require("fs-path");
 const path = require("path");
-
-const MongoConfig = require("../mongo-config");
-const MongoWrapper = require("../index");
 const _ = require("underscore");
 const Q = require("q");
 
-const exportConfig = require("./db-configs/icl.json");
-
-const mongoConfig = new MongoConfig(exportConfig.dbConfig);
-const mongoWrapper = MongoWrapper.getInstance(mongoConfig);
+const MongoConfig = require("./mongo-config");
+const MongoWrapper = require("./mongo-wrapper");
 
 class Exporter {
+  constructor(config) {
+    this.config = config;
+    const mongoConfig = new MongoConfig(this.config);
+    MongoWrapper.useConfig(mongoConfig);
+  }
+
   export(collections) {
     const promises = [];
 
@@ -25,7 +26,7 @@ class Exporter {
   }
 
   exportCollection(collection) {
-    return Q.nfcall(mongoWrapper.getAllFromCollection.bind(mongoWrapper), collection)
+    return MongoWrapper.customQuery(collection, { query: {} })
       .then(docs => {
         return this.writeCollection(docs, collection);
       })
@@ -41,27 +42,19 @@ class Exporter {
   }
 
   writeDocument(doc, collectionName) {
-    return Q.nfcall(fsPath.writeFile, this.getPath(doc, collectionName), JSON.stringify(doc, null, 2));
+    const fileName = this.getPath(doc, collectionName);
+    console.log(fileName);
+    return Q.nfcall(fsPath.writeFile, fileName, JSON.stringify(doc, null, 2));
   }
 
   getPath(doc, collectionName) {
     const basePath = this.getBasePath(doc, collectionName);
-    return path.join(basePath, collectionName, doc._id.toString());
+    return path.join(basePath, collectionName, doc._id.toString()) + ".json";
   }
 
   getBasePath(doc, collectionName) {
-    return exportConfig.path || __dirname;
+    return this.config.path || __dirname;
   }
 }
 
-const exporter = new Exporter();
-exporter.export(exportConfig.collections)
-  .then(() => {
-    console.log("Export Completed Successfully");
-  })
-  .fail(err => {
-    console.log("Error occured during export");
-    console.log(err + "\n" + err.stack);
-  })
-  .done();
-
+module.exports = Exporter;
